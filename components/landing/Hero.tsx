@@ -1,51 +1,23 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TrendingUp, BarChart3, Shield } from 'lucide-react';
 import AuthModal from '@/components/auth/AuthModal';
+import dynamic from 'next/dynamic';
+
+const Globe = dynamic(() => import('@/components/landing/Globe').then(mod => mod.Globe), {
+    ssr: false,
+    loading: () => <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-900 via-black to-purple-900 opacity-20" />
+});
 
 export default function Hero() {
     const [showAuthModal, setShowAuthModal] = useState(false);
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-    useEffect(() => {
-        setDimensions({
-            width: window.innerWidth,
-            height: window.innerHeight,
-        });
-
-        const handleResize = () => {
-            setDimensions({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     return (
         <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-black dark:to-purple-900">
-            {/* Animated background particles */}
-            <div className="particles-bg">
-                {dimensions.width > 0 && [...Array(20)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute w-2 h-2 bg-gradient-primary rounded-full opacity-20"
-                        animate={{
-                            x: [Math.random() * dimensions.width, Math.random() * dimensions.width],
-                            y: [Math.random() * dimensions.height, Math.random() * dimensions.height],
-                        }}
-                        transition={{
-                            duration: Math.random() * 10 + 10,
-                            repeat: Infinity,
-                            repeatType: 'reverse',
-                        }}
-                    />
-                ))}
-            </div>
+            {/* 3D Globe Background */}
+            <Globe />
 
             {/* Content */}
             <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
