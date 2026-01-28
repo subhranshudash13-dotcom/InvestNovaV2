@@ -147,15 +147,16 @@ export async function POST(request: Request) {
             }
         }
 
-        // 6. Personalize recommendations    const personalizedRecommendations = personalizeStockRecommendations(
-        stockRecommendations,
-        {
-            riskTolerance: userProfile.riskTolerance || 'medium',
-            investmentHorizon: userProfile.investmentHorizon || 'medium',
-            investmentAmount: userProfile.investmentAmount || 10000,
-            preferredAssets: userProfile.preferredAssets || 'both',
-        }
-    );
+        // 6. Personalize recommendations
+        const personalizedRecommendations = personalizeStockRecommendations(
+            stockRecommendations,
+            {
+                riskTolerance: userProfile.riskTolerance || 'medium',
+                investmentHorizon: userProfile.investmentHorizon || 'medium',
+                investmentAmount: userProfile.investmentAmount || 10000,
+                preferredAssets: userProfile.preferredAssets || 'both',
+            }
+        );
 
         // 7. Save to Supabase for realtime updates
         const topRecommendations = personalizedRecommendations.slice(0, 10);
