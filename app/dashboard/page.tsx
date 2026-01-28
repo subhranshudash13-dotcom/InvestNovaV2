@@ -1,15 +1,37 @@
+<<<<<<< HEAD
 import { createClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { RiskGauge } from '@/components/charts/RiskGauge';
 import { CandlestickChart } from '@/components/charts/CandlestickChart';
-import { NewsTicker } from '@/components/features/NewsTicker';
+=======
+"use client";
 
+import dynamic from 'next/dynamic';
+import { Button } from '@/components/ui/button';
+>>>>>>> 1a8d80c1e272cc544a3743b54e57e8068f719751
+import { NewsTicker } from '@/components/features/NewsTicker';
+import { RefreshCw, TrendingUp } from 'lucide-react';
+
+<<<<<<< HEAD
 export default async function DashboardPage() {
     const supabase = await createClient();
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
+=======
+const RiskGauge = dynamic(() => import('@/components/charts/RiskGauge').then(mod => mod.RiskGauge), {
+    ssr: false,
+    loading: () => <div className="h-[120px] w-full animate-pulse bg-muted/20 rounded-xl" />
+});
+
+const CandlestickChart = dynamic(() => import('@/components/charts/CandlestickChart').then(mod => mod.CandlestickChart), {
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full animate-pulse bg-muted/20 rounded-xl" />
+});
+
+export default function DashboardPage() {
+>>>>>>> 1a8d80c1e272cc544a3743b54e57e8068f719751
     return (
         <div className="space-y-8 animate-fade-in pb-10">
             <NewsTicker />
@@ -24,12 +46,19 @@ export default async function DashboardPage() {
                     </p>
                 </div>
                 <Button variant="outline" className="gap-2 glass-panel hover:bg-primary/10 transition-colors">
+                    <RefreshCw className="w-4 h-4" />
                     Refresh Data
                 </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:border-primary/50 transition-colors">
+<<<<<<< HEAD
+=======
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <TrendingUp className="w-24 h-24 text-primary" />
+                    </div>
+>>>>>>> 1a8d80c1e272cc544a3743b54e57e8068f719751
                     <h3 className="text-sm font-medium text-muted-foreground mb-2">Portfolio Value</h3>
                     <div className="text-4xl font-bold tracking-tight">$12,450.00</div>
                     <div className="mt-2 flex items-center gap-2 text-sm text-green-500">

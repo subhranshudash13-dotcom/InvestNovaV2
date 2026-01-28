@@ -10,6 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+<<<<<<< HEAD
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -17,6 +18,30 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "#3B82F6",
+=======
+        // App theme tokens (used by globals.css + shadcn-style utilities)
+        background: "hsl(var(--background) / <alpha-value>)",
+        foreground: "hsl(var(--foreground) / <alpha-value>)",
+        card: "hsl(var(--card) / <alpha-value>)",
+        "card-foreground": "hsl(var(--card-foreground) / <alpha-value>)",
+        popover: "hsl(var(--popover) / <alpha-value>)",
+        "popover-foreground": "hsl(var(--popover-foreground) / <alpha-value>)",
+        muted: "hsl(var(--muted) / <alpha-value>)",
+        "muted-foreground": "hsl(var(--muted-foreground) / <alpha-value>)",
+        accent: "hsl(var(--accent) / <alpha-value>)",
+        "accent-foreground": "hsl(var(--accent-foreground) / <alpha-value>)",
+        destructive: "hsl(var(--destructive) / <alpha-value>)",
+        "destructive-foreground": "hsl(var(--destructive-foreground) / <alpha-value>)",
+        border: "hsl(var(--border) / <alpha-value>)",
+        input: "hsl(var(--input) / <alpha-value>)",
+        ring: "hsl(var(--ring) / <alpha-value>)",
+        "primary-foreground": "hsl(var(--primary-foreground) / <alpha-value>)",
+        "secondary-foreground": "hsl(var(--secondary-foreground) / <alpha-value>)",
+
+        // InvestNova Brand Colors (Blue-Purple Gradient Theme)
+        primary: {
+          DEFAULT: "#3B82F6", // Blue
+>>>>>>> 1a8d80c1e272cc544a3743b54e57e8068f719751
           50: "#EFF6FF",
           100: "#DBEAFE",
           200: "#BFDBFE",
@@ -29,7 +54,11 @@ const config: Config = {
           900: "#1E3A8A",
         },
         secondary: {
+<<<<<<< HEAD
           DEFAULT: "#8B5CF6",
+=======
+          DEFAULT: "#8B5CF6", // Purple
+>>>>>>> 1a8d80c1e272cc544a3743b54e57e8068f719751
           50: "#FAF5FF",
           100: "#F3E8FF",
           200: "#E9D5FF",
@@ -41,11 +70,21 @@ const config: Config = {
           800: "#6B21A8",
           900: "#581C87",
         },
+<<<<<<< HEAD
         risk: {
           low: "#10B981",
           medium: "#F59E0B",
           high: "#EF4444",
         },
+=======
+        // Risk Level Colors
+        risk: {
+          low: "#10B981", // Green
+          medium: "#F59E0B", // Yellow/Orange
+          high: "#EF4444", // Red
+        },
+        // Chart Colors
+>>>>>>> 1a8d80c1e272cc544a3743b54e57e8068f719751
         chart: {
           profit: "#10B981",
           loss: "#EF4444",
