@@ -13,43 +13,43 @@ import {
 
 const features = [
     {
-        title: "AI Analysis Engine",
-        description: "Sophisticated algorithms scan millions of data points to identify high-probability trading setups.",
-        icon: Cpu,
+        title: "Whale Tracker",
+        description: "Monitor large institutional trades ('Smart Money') as they happen with real-time alerts.",
+        icon: Activity,
         color: "text-blue-500",
         delay: 0.1
     },
     {
-        title: "Real-Time Signals",
-        description: "Receive instant buy/sell alerts with clear entry, target, and stop-loss levels.",
-        icon: Activity,
+        title: "Social Sentiment",
+        description: "Aggregate the 'Peoples Pulse' with real-time community polls on major financial assets.",
+        icon: Zap,
         color: "text-yellow-500",
         delay: 0.2
     },
     {
-        title: "Risk Management",
-        description: "Automated risk assessment scores help you protect your capital and manage portfolio exposure.",
+        title: "Leaderboard",
+        description: "Compete with the community and climb the ranks based on your prediction accuracy.",
         icon: ShieldCheck,
         color: "text-green-500",
         delay: 0.3
     },
     {
-        title: "Global Markets",
-        description: "Unified coverage across major Stock exchanges and Forex currency pairs in one dashboard.",
+        title: "Global Intelligence",
+        description: "Unified coverage across major Stock exchanges and Forex currency pairs with social signals.",
         icon: GlobeIcon,
         color: "text-purple-500",
         delay: 0.4
     },
     {
         title: "Predictive Analytics",
-        description: "Foresee market shifts before they happen with our backtest-validated predictive models.",
+        description: "Combine AI analysis with social sentiment to foresee market shifts before they happen.",
         icon: LineChart,
         color: "text-pink-500",
         delay: 0.5
     },
     {
-        title: "Personalized Insights",
-        description: "Recommendations tailored specifically to your unique risk tolerance and investment goals.",
+        title: "Community Dashboard",
+        description: "A personalized experience tailored to your risk profile and community standing.",
         icon: LayoutDashboard,
         color: "text-orange-500",
         delay: 0.6

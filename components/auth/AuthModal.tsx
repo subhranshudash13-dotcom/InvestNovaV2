@@ -76,7 +76,11 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         });
 
         if (error) {
-            setMessage(error.message);
+            if (error.message.includes('provider is not enabled')) {
+                setMessage('Google Sign-In is currently being configured. Please use your email/password for now.');
+            } else {
+                setMessage(error.message);
+            }
         }
     };
 

@@ -23,9 +23,6 @@ export function ThemeToggle() {
     const themes = [
         { name: "Light", value: "light", icon: Sun },
         { name: "Dark", value: "dark", icon: Moon },
-        { name: "System", value: "system", icon: Monitor },
-        { name: "Sunset", value: "sunset", icon: Palette },
-        { name: "Ocean", value: "ocean", icon: Droplets },
     ];
 
     return (

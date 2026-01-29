@@ -30,16 +30,16 @@ export default function Hero() {
                     transition={{ duration: 0.8 }}
                 >
                     <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-semibold tracking-wide uppercase">
-                        Next-Gen Trading Intelligence
+                        Institutional Grade Social Signals
                     </div>
-                    <h1 className="text-5xl md:text-8xl font-extrabold mb-8 tracking-tight">
-                        <span className="text-gradient">InvestNova</span>
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 tracking-tight">
+                        <span className="text-gradient">Community Driven</span> Intelligence
                     </h1>
-                    <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 max-w-3xl mx-auto leading-tight">
-                        AI Analyzes Stocks & Forex Markets Instantly
+                    <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-6 max-w-4xl mx-auto leading-tight">
+                        Track Whale Movements & Market Sentiment in Real-Time
                     </p>
-                    <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-                        Get Personalized Recommendations with Risk Scores Before You Invest
+                    <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto px-4">
+                        Join thousands of traders using AI and Social Signals to beat the market.
                     </p>
                 </motion.div>
 
@@ -48,22 +48,24 @@ export default function Hero() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.6, duration: 0.4 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4"
                 >
                     <button
                         onClick={() => setShowAuthModal(true)}
                         className="button-primary text-lg px-12 py-5 w-full sm:w-auto"
                     >
-                        Start Analyzing Free
+                        Join the Community
                     </button>
                     <button
                         onClick={() => {
                             const featuresSection = document.getElementById('features');
-                            featuresSection?.scrollIntoView({ behavior: 'smooth' });
+                            if (featuresSection) {
+                                featuresSection.scrollIntoView({ behavior: 'smooth' });
+                            }
                         }}
                         className="px-12 py-5 rounded-full border border-border bg-background/50 backdrop-blur-md font-semibold hover:bg-muted transition-all w-full sm:w-auto hover:border-primary/30"
                     >
-                        View Demo
+                        Explore Features
                     </button>
                 </motion.div>
 
