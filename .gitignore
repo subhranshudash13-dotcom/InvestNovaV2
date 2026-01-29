@@ -30,6 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# local debug artifacts (should never be committed)
+tailwind_old.ts
+diff_files.txt
+lint_log*.txt
+
 # env files
 .env*
 !.env.example
