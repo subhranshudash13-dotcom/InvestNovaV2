@@ -4,8 +4,12 @@
  * Documentation: https://finnhub.io/docs/api
  */
 
-const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY!;
+const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || '';
 const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
+
+if (!FINNHUB_API_KEY && typeof window === 'undefined') {
+    console.warn('Warning: FINNHUB_API_KEY is missing. API calls will fail.');
+}
 
 // Rate limiter: Track API calls to stay within 60/min limit
 let apiCallTimestamps: number[] = [];
@@ -35,6 +39,10 @@ async function fetchWithRetry(url: string, retries = 3): Promise<any> {
                     'X-Finnhub-Token': FINNHUB_API_KEY,
                 },
             });
+
+            if (!FINNHUB_API_KEY) {
+                throw new Error('Finnhub API key is not configured');
+            }
 
             if (!response.ok) {
                 if (response.status === 429) {

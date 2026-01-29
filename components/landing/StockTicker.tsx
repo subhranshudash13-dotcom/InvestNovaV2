@@ -18,9 +18,9 @@ export default function StockTicker() {
     const tickerItems = [...mockStocks, ...mockStocks, ...mockStocks];
 
     return (
-        <div className="relative border-y border-border py-4 bg-background/50 backdrop-blur-sm overflow-hidden flex items-center">
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10" />
+        <div className="relative border-y border-border py-4 bg-background/50 backdrop-blur-sm overflow-hidden flex items-center shadow-inner">
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
 
             <motion.div
                 className="flex gap-12"

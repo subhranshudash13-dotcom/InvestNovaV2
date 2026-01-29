@@ -81,12 +81,12 @@ function StatCard({
 
     return (
         <motion.div
-            className="glass-card glass-card-hover p-10 flex flex-col items-center justify-center min-h-[200px]"
+            className="glass-panel glass-panel-hover p-10 flex flex-col items-center justify-center min-h-[200px]"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.5, delay }}
         >
-            <div className="text-5xl md:text-6xl font-black gradient-text mb-3 tracking-tighter">
+            <div className="text-5xl md:text-6xl font-black text-gradient mb-3 tracking-tighter">
                 {count.toLocaleString()}
                 {count >= end * 0.99 && suffix}
             </div>

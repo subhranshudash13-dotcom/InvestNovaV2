@@ -18,6 +18,18 @@ export default async function DashboardLayout({
         redirect('/');
     }
 
+    // Check for profile
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+    // If no profile or essential onboarding data missing, redirect
+    if (!profile || !profile.riskTolerance) {
+        redirect('/onboarding');
+    }
+
     return (
         <div className="min-h-screen bg-background">
             <Sidebar />

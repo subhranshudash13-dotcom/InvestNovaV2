@@ -112,20 +112,34 @@
 
 /* Custom Utilities */
 @layer components {
-  .gradient-text {
+  .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400;
+  }
+
+  /* Alias legacy for now if needed, but aim for standardization */
+  .gradient-text {
+    @apply text-gradient;
   }
 
   .button-primary {
     @apply inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-primary/20 active:scale-95 disabled:opacity-50;
   }
 
-  .glass-card {
+  .glass-panel {
     @apply rounded-2xl border border-white/20 bg-white/40 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-black/40;
   }
 
-  .glass-card-hover {
+  .glass-panel-hover {
     @apply transition-all duration-300 hover:border-primary/50 hover:bg-white/60 dark:hover:bg-black/60 hover:-translate-y-1;
+  }
+
+  /* Legacy aliases */
+  .glass-card {
+    @apply glass-panel;
+  }
+
+  .glass-card-hover {
+    @apply glass-panel-hover;
   }
 
   .bg-gradient-primary {

@@ -33,7 +33,7 @@ export default function Hero() {
                         Next-Gen Trading Intelligence
                     </div>
                     <h1 className="text-5xl md:text-8xl font-extrabold mb-8 tracking-tight">
-                        <span className="gradient-text">InvestNova</span>
+                        <span className="text-gradient">InvestNova</span>
                     </h1>
                     <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 max-w-3xl mx-auto leading-tight">
                         AI Analyzes Stocks & Forex Markets Instantly
@@ -70,15 +70,15 @@ export default function Hero() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                 >
-                    <div className="glass-card px-6 py-3 flex items-center gap-2 text-sm font-medium">
+                    <div className="glass-panel px-6 py-3 flex items-center gap-2 text-sm font-medium">
                         <TrendingUp className="w-4 h-4 text-blue-500" />
                         <span>Real-Time Data</span>
                     </div>
-                    <div className="glass-card px-6 py-3 flex items-center gap-2 text-sm font-medium">
+                    <div className="glass-panel px-6 py-3 flex items-center gap-2 text-sm font-medium">
                         <BarChart3 className="w-4 h-4 text-purple-500" />
                         <span>AI-Powered Analysis</span>
                     </div>
-                    <div className="glass-card px-6 py-3 flex items-center gap-2 text-sm font-medium">
+                    <div className="glass-panel px-6 py-3 flex items-center gap-2 text-sm font-medium">
                         <Shield className="w-4 h-4 text-green-500" />
                         <span>Risk Assessment</span>
                     </div>

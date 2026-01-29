@@ -5,6 +5,7 @@ import { Stock, UserRecommendation } from '@/lib/mongodb/models';
 import { FinnhubClient } from '@/lib/finnhub/client';
 import { calculateStockRisk, calculateDrawdown, estimateProjectedReturn } from '@/lib/analysis/riskCalculator';
 import { personalizeStockRecommendations } from '@/lib/analysis/personalizer';
+import { computeConfidenceScore, simulateBacktestPerformance } from '@/lib/analysis/accuracy';
 
 export async function POST(request: Request) {
     try {
@@ -99,6 +100,16 @@ export async function POST(request: Request) {
                         { upsert: true, new: true }
                     );
 
+                    // ... (in the loop where rec is created)
+                    const perf = simulateBacktestPerformance(symbol, 'mean-reversion');
+                    const confidenceScore = computeConfidenceScore({
+                        rsi: technicals.rsi || 50,
+                        volatility: technicals.volatility || 25,
+                        sentiment: sentiment?.sentiment || 0,
+                        historicalWinRate: perf.successRate,
+                        sampleSize: perf.sampleSize
+                    });
+
                     stockRecommendations.push({
                         symbol,
                         name: profile.name || symbol,
@@ -110,11 +121,12 @@ export async function POST(request: Request) {
                         timeframe: userProfile.investmentHorizon === 'short' ? '1W' : userProfile.investmentHorizon === 'medium' ? '1M' : '3M',
                         reason: riskResult.recommendation,
                         matchScore: 0,
-                        confidenceScore: Math.floor(Math.random() * (99 - 85) + 85), // Mock 85-99%
-                        historicalAccuracy: `${Math.floor(Math.random() * (98 - 88) + 88)}% success rate`,
+                        confidenceScore,
+                        historicalAccuracy: `${(perf.successRate * 100).toFixed(1)}% success rate in backtests`,
                     });
                 } else {
                     // Use cached data
+                    const perf = simulateBacktestPerformance(cachedStock.symbol, 'mean-reversion');
                     const riskResult = calculateStockRisk({
                         volatility: cachedStock.technicals.volatility,
                         beta: cachedStock.technicals.beta,
@@ -130,6 +142,14 @@ export async function POST(request: Request) {
                         userProfile.investmentHorizon || 'medium'
                     );
 
+                    const confidenceScore = computeConfidenceScore({
+                        rsi: cachedStock.technicals.rsi,
+                        volatility: cachedStock.technicals.volatility,
+                        sentiment: cachedStock.sentiment,
+                        historicalWinRate: perf.successRate,
+                        sampleSize: perf.sampleSize
+                    });
+
                     stockRecommendations.push({
                         symbol: cachedStock.symbol,
                         name: cachedStock.name,
@@ -141,8 +161,8 @@ export async function POST(request: Request) {
                         timeframe: userProfile.investmentHorizon === 'short' ? '1W' : userProfile.investmentHorizon === 'medium' ? '1M' : '3M',
                         reason: riskResult.recommendation,
                         matchScore: 0,
-                        confidenceScore: Math.floor(Math.random() * (99 - 85) + 85),
-                        historicalAccuracy: `${Math.floor(Math.random() * (98 - 88) + 88)}% success rate`,
+                        confidenceScore,
+                        historicalAccuracy: `${(perf.successRate * 100).toFixed(1)}% success rate in backtests`,
                     });
                 }
             } catch (error) {
