@@ -23,7 +23,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -57,7 +57,6 @@
     --popover: 20 14% 8%;
     --popover-foreground: 20 10% 98%;
     --primary: 10 80% 60%;
-    /* Warm Orange/Red */
     --primary-foreground: 20 10% 98%;
     --secondary: 20 14% 12%;
     --secondary-foreground: 20 10% 98%;
@@ -75,14 +74,12 @@
   /* Ocean Theme */
   [class~="ocean"] {
     --background: 200 50% 3%;
-    /* Deep Blue */
     --foreground: 200 10% 98%;
     --card: 200 50% 6%;
     --card-foreground: 200 10% 98%;
     --popover: 200 50% 6%;
     --popover-foreground: 200 10% 98%;
     --primary: 190 90% 50%;
-    /* Cyan/Teal */
     --primary-foreground: 200 50% 3%;
     --secondary: 200 30% 15%;
     --secondary-foreground: 200 10% 98%;
@@ -95,27 +92,56 @@
     --border: 200 30% 20%;
     --input: 200 30% 20%;
     --ring: 190 90% 50%;
-    --radius: 0.5rem;
-    /* Ensure radius is defined in ocean theme too if needed */
+    --radius: 0.75rem;
   }
-}
 
-@layer base {
   * {
-    border-color: hsl(var(--border));
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Glassmorphism Utilities */
-.glass-panel {
-  @apply bg-background/60 backdrop-blur-md border border-border/50 shadow-lg;
+/* Custom Utilities */
+@layer components {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400;
+  }
+
+  .button-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-primary/20 active:scale-95 disabled:opacity-50;
+  }
+
+  .glass-card {
+    @apply rounded-2xl border border-white/20 bg-white/40 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-black/40;
+  }
+
+  .glass-card-hover {
+    @apply transition-all duration-300 hover:border-primary/50 hover:bg-white/60 dark:hover:bg-black/60 hover:-translate-y-1;
+  }
+
+  .bg-gradient-primary {
+    @apply bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-900 dark:to-purple-900;
+  }
 }
 
-.text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500;
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-muted-foreground/20 hover:bg-muted-foreground/30;
 }

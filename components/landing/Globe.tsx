@@ -17,12 +17,12 @@ function Earth() {
     return (
         <Sphere args={[2.5, 64, 64]} ref={meshRef}>
             <meshStandardMaterial
-                color="#1E3A8A" // Deep Blue
+                color="#3B82F6" // Brighter Blue
                 emissive="#1E3A8A"
-                emissiveIntensity={0.2}
-                roughness={0.7}
-                wireframe={true} // Sci-fi wireframe look
-                wireframeLinewidth={1.5}
+                emissiveIntensity={0.3}
+                roughness={0.5}
+                wireframe={true}
+                wireframeLinewidth={2}
             />
         </Sphere>
     );
@@ -63,14 +63,14 @@ function CityMarkers() {
 
 export function Globe() {
     return (
-        <div className="absolute inset-0 -z-10 h-full w-full opacity-40">
-            <Canvas camera={{ position: [0, 0, 5.5], fov: 45 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1} />
-                <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        <div className="absolute inset-0 -z-20 h-full w-full opacity-60 dark:opacity-40">
+            <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+                <ambientLight intensity={0.7} />
+                <pointLight position={[10, 10, 10]} intensity={1.5} />
+                <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
                 <Earth />
                 <CityMarkers />
-                <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+                <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.8} />
             </Canvas>
         </div>
     );

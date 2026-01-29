@@ -15,47 +15,32 @@ export default function Hero() {
     const [showAuthModal, setShowAuthModal] = useState(false);
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-black dark:to-purple-900">
+        <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
             {/* 3D Globe Background */}
             <Globe />
 
+            {/* Background Overlay for better text readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background -z-10" />
+
             {/* Content */}
-            <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <h1 className="text-5xl md:text-7xl font-bold mb-6">
+                    <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-semibold tracking-wide uppercase">
+                        Next-Gen Trading Intelligence
+                    </div>
+                    <h1 className="text-5xl md:text-8xl font-extrabold mb-8 tracking-tight">
                         <span className="gradient-text">InvestNova</span>
                     </h1>
-                    <p className="text-xl md:text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+                    <p className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 max-w-3xl mx-auto leading-tight">
                         AI Analyzes Stocks & Forex Markets Instantly
                     </p>
-                    <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
+                    <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
                         Get Personalized Recommendations with Risk Scores Before You Invest
                     </p>
-                </motion.div>
-
-                {/* Feature Pills */}
-                <motion.div
-                    className="flex flex-wrap justify-center gap-4 mb-12"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                >
-                    <div className="glass-card px-6 py-3 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-primary-500" />
-                        <span className="font-medium">Real-Time Data</span>
-                    </div>
-                    <div className="glass-card px-6 py-3 flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-secondary-500" />
-                        <span className="font-medium">AI-Powered Analysis</span>
-                    </div>
-                    <div className="glass-card px-6 py-3 flex items-center gap-2">
-                        <Shield className="w-5 h-5 text-risk-low" />
-                        <span className="font-medium">Risk Assessment</span>
-                    </div>
                 </motion.div>
 
                 {/* CTA Button */}
@@ -63,24 +48,41 @@ export default function Hero() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.6, duration: 0.4 }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
                     <button
                         onClick={() => setShowAuthModal(true)}
-                        className="button-primary text-lg px-10 py-4"
+                        className="button-primary text-lg px-12 py-5 w-full sm:w-auto"
                     >
                         Start Analyzing Free
                     </button>
+                    <button
+                        className="px-12 py-5 rounded-full border border-border bg-background/50 backdrop-blur-md font-semibold hover:bg-muted transition-all w-full sm:w-auto"
+                    >
+                        View Demo
+                    </button>
                 </motion.div>
 
-                {/* Trust indicators */}
-                <motion.p
-                    className="mt-6 text-sm text-gray-500 dark:text-gray-400"
+                {/* Feature Pills */}
+                <motion.div
+                    className="flex flex-wrap justify-center gap-4 mt-16"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1, duration: 0.5 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
                 >
-                    No credit card required • Free forever • Cancel anytime
-                </motion.p>
+                    <div className="glass-card px-6 py-3 flex items-center gap-2 text-sm font-medium">
+                        <TrendingUp className="w-4 h-4 text-blue-500" />
+                        <span>Real-Time Data</span>
+                    </div>
+                    <div className="glass-card px-6 py-3 flex items-center gap-2 text-sm font-medium">
+                        <BarChart3 className="w-4 h-4 text-purple-500" />
+                        <span>AI-Powered Analysis</span>
+                    </div>
+                    <div className="glass-card px-6 py-3 flex items-center gap-2 text-sm font-medium">
+                        <Shield className="w-4 h-4 text-green-500" />
+                        <span>Risk Assessment</span>
+                    </div>
+                </motion.div>
             </div>
 
             {/* Auth Modal */}

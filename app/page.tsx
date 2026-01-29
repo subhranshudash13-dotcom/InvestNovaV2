@@ -1,13 +1,15 @@
 import Hero from '@/components/landing/Hero';
 import AnimatedStats from '@/components/landing/AnimatedStats';
 import StockTicker from '@/components/landing/StockTicker';
+import { NewsTicker } from '@/components/features/NewsTicker';
 import { Navbar } from '@/components/layout/Navbar';
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
       <Navbar />
       <Hero />
+      <NewsTicker />
       <AnimatedStats />
       <StockTicker />
 

@@ -15,12 +15,15 @@ const mockStocks = [
 
 export default function StockTicker() {
     // Duplicate array for seamless loop
-    const tickerItems = [...mockStocks, ...mockStocks];
+    const tickerItems = [...mockStocks, ...mockStocks, ...mockStocks];
 
     return (
-        <div className="bg-gradient-primary py-4 overflow-hidden">
+        <div className="relative border-y border-border py-4 bg-background/50 backdrop-blur-sm overflow-hidden flex items-center">
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10" />
+
             <motion.div
-                className="flex gap-8"
+                className="flex gap-12"
                 animate={{
                     x: [0, -100 * mockStocks.length],
                 }}
@@ -28,7 +31,7 @@ export default function StockTicker() {
                     x: {
                         repeat: Infinity,
                         repeatType: 'loop',
-                        duration: 30,
+                        duration: 40,
                         ease: 'linear',
                     },
                 }}
@@ -36,20 +39,23 @@ export default function StockTicker() {
                 {tickerItems.map((item, index) => (
                     <div
                         key={index}
-                        className="flex items-center gap-3 text-white whitespace-nowrap"
+                        className="flex items-center gap-4 whitespace-nowrap group"
                     >
-                        <span className="font-bold text-lg">{item.symbol}</span>
-                        <span className="text-sm">${item.price.toFixed(item.symbol.includes('/') ? 4 : 2)}</span>
-                        <span
-                            className={`text-sm font-semibold ${item.change >= 0 ? 'text-green-200' : 'text-red-200'
-                                }`}
-                        >
-                            {item.change >= 0 ? '+' : ''}
-                            {item.change.toFixed(2)}%
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="font-bold text-sm tracking-tight group-hover:text-primary transition-colors">{item.symbol}</span>
+                            <span className="text-xs text-muted-foreground">${item.price.toFixed(item.symbol.includes('/') ? 4 : 2)}</span>
+                        </div>
+                        <div className={cn(
+                            "px-2 py-1 rounded text-[10px] font-bold",
+                            item.change >= 0 ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
+                        )}>
+                            {item.change >= 0 ? '↑' : '↓'} {Math.abs(item.change).toFixed(2)}%
+                        </div>
                     </div>
                 ))}
             </motion.div>
         </div>
     );
 }
+
+import { cn } from '@/lib/utils';
