@@ -29,6 +29,12 @@ interface Recommendation {
     stop_loss: number;
     analysis_snippet: string;
     created_at: string;
+    mlPredictions?: {
+        lstm: { price: number; confidence: number; direction?: 'up' | 'down' | 'flat' };
+        xgboost: { price: number; confidence: number };
+        transformer: { price: number; confidence: number };
+        consensus: { price: number; confidence: number; changePercent?: number };
+    } | null;
 }
 
 export default function RecommendationsPage() {
@@ -190,6 +196,44 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
                     "{rec.analysis_snippet}"
                 </p>
             </div>
+
+            {rec.mlPredictions && <MLPredictionsCard ml={rec.mlPredictions} />}
         </Card>
+    );
+}
+
+function MLPredictionsCard({ ml }: { ml: NonNullable<Recommendation['mlPredictions']> }) {
+    const formatPrice = (v: number) => (v >= 1 ? v.toFixed(2) : v.toFixed(4));
+    const formatPct = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
+
+    return (
+        <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-primary/10 border-t border-primary/20">
+            <div className="text-xs font-bold text-primary mb-3 uppercase tracking-wider">ML Predictions</div>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-2 bg-background/80 rounded-lg border border-border/50">
+                    <div className="font-mono font-bold text-green-600">{formatPrice(ml.lstm.price)}</div>
+                    <div className="text-muted-foreground">LSTM</div>
+                    <div className="text-[10px]">{(ml.lstm.confidence * 100).toFixed(0)}% {ml.lstm.direction}</div>
+                </div>
+                <div className="p-2 bg-background/80 rounded-lg border border-border/50">
+                    <div className="font-mono font-bold text-blue-600">{formatPrice(ml.xgboost.price)}</div>
+                    <div className="text-muted-foreground">XGBoost</div>
+                    <div className="text-[10px]">{(ml.xgboost.confidence * 100).toFixed(0)}%</div>
+                </div>
+                <div className="p-2 bg-background/80 rounded-lg border border-border/50">
+                    <div className="font-mono font-bold text-purple-600">{formatPrice(ml.transformer.price)}</div>
+                    <div className="text-muted-foreground">Transformer</div>
+                    <div className="text-[10px]">{(ml.transformer.confidence * 100).toFixed(0)}%</div>
+                </div>
+                <div className="p-2 bg-primary/10 rounded-lg border border-primary/30">
+                    <div className="font-mono font-bold text-primary">{formatPrice(ml.consensus.price)}</div>
+                    <div className="text-muted-foreground">Consensus</div>
+                    <div className="text-[10px]">
+                        {(ml.consensus.confidence * 100).toFixed(0)}%
+                        {ml.consensus.changePercent !== undefined && ` ${formatPct(ml.consensus.changePercent)}`}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }

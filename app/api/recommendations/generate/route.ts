@@ -75,7 +75,8 @@ export async function POST(request: Request) {
                                 historicalData,
                             });
                         }
-                    } catch {
+                    } catch (err) {
+                        console.warn(`[ML] Failed to get predictions for ${symbol}:`, err);
                         ml = null;
                     }
 
@@ -190,7 +191,8 @@ export async function POST(request: Request) {
                                 historicalData,
                             });
                         }
-                    } catch {
+                    } catch (err) {
+                        console.warn(`[ML] Failed to get predictions for ${symbol} (cached path):`, err);
                         ml = null;
                     }
 
