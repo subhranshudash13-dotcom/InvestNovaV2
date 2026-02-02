@@ -6,6 +6,7 @@ import { FinnhubClient } from '@/lib/finnhub/client';
 import { calculateStockRisk, calculateDrawdown, estimateProjectedReturn } from '@/lib/analysis/riskCalculator';
 import { personalizeStockRecommendations } from '@/lib/analysis/personalizer';
 import { computeConfidenceScore, simulateBacktestPerformance } from '@/lib/analysis/accuracy';
+import { MLServiceClient } from '@/lib/ml-service/client';
 
 export async function POST(request: Request) {
     try {
@@ -61,8 +62,22 @@ export async function POST(request: Request) {
                         continue; // Skip if data unavailable
                     }
 
-                    const candles = await FinnhubClient.getStockCandles(symbol, 'D', 30);
+                    const candles = await FinnhubClient.getStockCandles(symbol, 'D', 60);
                     const drawdown = candles && candles.c ? calculateDrawdown(candles.c) : -5;
+
+                    let ml: any = null;
+                    try {
+                        if (candles && candles.s === 'ok' && Array.isArray(candles.c) && candles.c.length) {
+                            const historicalData = candles.c.map((close: number) => ({ close }));
+                            ml = await MLServiceClient.predict({
+                                symbol,
+                                timeframe: '7d',
+                                historicalData,
+                            });
+                        }
+                    } catch {
+                        ml = null;
+                    }
 
                     // Calculate risk score
                     const riskResult = calculateStockRisk({
@@ -78,7 +93,7 @@ export async function POST(request: Request) {
                         quote.c,
                         technicals.volatility || 25,
                         technicals.rsi || 50,
-                        userProfile.investmentHorizon || 'medium'
+                        userProfile.investment_horizon || 'medium'
                     );
 
                     // Update MongoDB cache
@@ -118,11 +133,33 @@ export async function POST(request: Request) {
                         riskScore: riskResult.score,
                         riskLevel: riskResult.level,
                         projectedReturn,
-                        timeframe: userProfile.investmentHorizon === 'short' ? '1W' : userProfile.investmentHorizon === 'medium' ? '1M' : '3M',
+                        timeframe: userProfile.investment_horizon === 'short' ? '1W' : userProfile.investment_horizon === 'medium' ? '1M' : '3M',
                         reason: riskResult.recommendation,
                         matchScore: 0,
                         confidenceScore,
                         historicalAccuracy: `${(perf.successRate * 100).toFixed(1)}% success rate in backtests`,
+                        mlPredictions: ml
+                            ? {
+                                  lstm: {
+                                      price: ml.predictions?.lstm?.price,
+                                      confidence: ml.predictions?.lstm?.confidence,
+                                      direction: ml.predictions?.lstm?.direction,
+                                  },
+                                  xgboost: {
+                                      price: ml.predictions?.xgboost?.price,
+                                      confidence: ml.predictions?.xgboost?.confidence,
+                                  },
+                                  transformer: {
+                                      price: ml.predictions?.transformer?.price,
+                                      confidence: ml.predictions?.transformer?.confidence,
+                                  },
+                                  consensus: {
+                                      price: ml.consensus?.price,
+                                      confidence: ml.consensus?.confidence,
+                                      changePercent: ml.consensus?.changePercent,
+                                  },
+                              }
+                            : null,
                     });
                 } else {
                     // Use cached data
@@ -139,8 +176,23 @@ export async function POST(request: Request) {
                         cachedStock.price,
                         cachedStock.technicals.volatility,
                         cachedStock.technicals.rsi,
-                        userProfile.investmentHorizon || 'medium'
+                        userProfile.investment_horizon || 'medium'
                     );
+
+                    let ml: any = null;
+                    try {
+                        const candles = await FinnhubClient.getStockCandles(symbol, 'D', 60);
+                        if (candles && candles.s === 'ok' && Array.isArray(candles.c) && candles.c.length) {
+                            const historicalData = candles.c.map((close: number) => ({ close }));
+                            ml = await MLServiceClient.predict({
+                                symbol,
+                                timeframe: '7d',
+                                historicalData,
+                            });
+                        }
+                    } catch {
+                        ml = null;
+                    }
 
                     const confidenceScore = computeConfidenceScore({
                         rsi: cachedStock.technicals.rsi,
@@ -158,11 +210,33 @@ export async function POST(request: Request) {
                         riskScore: riskResult.score,
                         riskLevel: riskResult.level,
                         projectedReturn,
-                        timeframe: userProfile.investmentHorizon === 'short' ? '1W' : userProfile.investmentHorizon === 'medium' ? '1M' : '3M',
+                        timeframe: userProfile.investment_horizon === 'short' ? '1W' : userProfile.investment_horizon === 'medium' ? '1M' : '3M',
                         reason: riskResult.recommendation,
                         matchScore: 0,
                         confidenceScore,
                         historicalAccuracy: `${(perf.successRate * 100).toFixed(1)}% success rate in backtests`,
+                        mlPredictions: ml
+                            ? {
+                                  lstm: {
+                                      price: ml.predictions?.lstm?.price,
+                                      confidence: ml.predictions?.lstm?.confidence,
+                                      direction: ml.predictions?.lstm?.direction,
+                                  },
+                                  xgboost: {
+                                      price: ml.predictions?.xgboost?.price,
+                                      confidence: ml.predictions?.xgboost?.confidence,
+                                  },
+                                  transformer: {
+                                      price: ml.predictions?.transformer?.price,
+                                      confidence: ml.predictions?.transformer?.confidence,
+                                  },
+                                  consensus: {
+                                      price: ml.consensus?.price,
+                                      confidence: ml.consensus?.confidence,
+                                      changePercent: ml.consensus?.changePercent,
+                                  },
+                              }
+                            : null,
                     });
                 }
             } catch (error) {
@@ -175,10 +249,10 @@ export async function POST(request: Request) {
         const personalizedRecommendations = personalizeStockRecommendations(
             stockRecommendations,
             {
-                riskTolerance: userProfile.riskTolerance || 'medium',
-                investmentHorizon: userProfile.investmentHorizon || 'medium',
-                investmentAmount: userProfile.investmentAmount || 10000,
-                preferredAssets: userProfile.preferredAssets || 'both',
+                riskTolerance: userProfile.risk_tolerance || 'medium',
+                investmentHorizon: userProfile.investment_horizon || 'medium',
+                investmentAmount: userProfile.investment_amount || 10000,
+                preferredAssets: userProfile.preferred_assets || ['stocks'],
             }
         );
 

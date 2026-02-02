@@ -9,7 +9,7 @@ export interface UserProfile {
     riskTolerance: 'low' | 'medium' | 'high';
     investmentHorizon: 'short' | 'medium' | 'long'; // days, weeks, months
     investmentAmount: number;
-    preferredAssets?: 'stocks' | 'forex' | 'both';
+    preferredAssets?: Array<'stocks' | 'forex' | 'crypto'>;
 }
 
 export interface StockRecommendation {
@@ -75,8 +75,11 @@ function calculateMatchScore(
 
     // Asset preference
     if (userProfile.preferredAssets) {
-        if (userProfile.preferredAssets === assetType) matchScore += 10;
-        else if (userProfile.preferredAssets !== 'both') matchScore -= 5;
+        const wantsAssetType = userProfile.preferredAssets.includes(
+            assetType === 'stock' ? 'stocks' : 'forex'
+        );
+        if (wantsAssetType) matchScore += 10;
+        else matchScore -= 5;
     }
 
     return Math.min(Math.max(matchScore, 0), 100);

@@ -15,9 +15,9 @@ const steps = [
         title: 'Define Your Risk Profile',
         description: 'How do you characterize your investment approach?',
         options: [
-            { value: 'conservative', label: 'Conservative', icon: Shield, desc: 'Prioritize capital preservation over high returns.' },
-            { value: 'balanced', label: 'Balanced', icon: Target, desc: 'A mix of safety and growth potential.' },
-            { value: 'aggressive', label: 'Aggressive', icon: Rocket, desc: 'Seeking high returns with significant risk tolerance.' },
+            { value: 'low', label: 'Conservative', icon: Shield, desc: 'Prioritize capital preservation over high returns.' },
+            { value: 'medium', label: 'Balanced', icon: Target, desc: 'A mix of safety and growth potential.' },
+            { value: 'high', label: 'Aggressive', icon: Rocket, desc: 'Seeking high returns with significant risk tolerance.' },
         ]
     },
     {
@@ -57,10 +57,13 @@ export default function OnboardingPage() {
                     .from('profiles')
                     .upsert({
                         id: user.id,
+                        email: user.email,
                         full_name: user.user_metadata.full_name || 'Generic User',
                         risk_tolerance: formData.riskTolerance,
                         investment_horizon: formData.investmentHorizon,
+                        investment_amount: 10000,
                         preferred_assets: formData.preferredAssets,
+                        onboarding_completed: true,
                         updated_at: new Date().toISOString(),
                     });
 

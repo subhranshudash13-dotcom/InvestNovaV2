@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
                 const riskResult = calculateForexRisk({
                     atrVolatility: technicals?.atr || 0.001,
-                    leverage: userProfile.riskTolerance === 'low' ? 10 : userProfile.riskTolerance === 'medium' ? 50 : 100,
+                    leverage: userProfile.risk_tolerance === 'low' ? 10 : userProfile.risk_tolerance === 'medium' ? 50 : 100,
                     liquidity,
                     trendStrength: technicals?.trendStrength || 0,
                     spreadPips: spread,
@@ -82,10 +82,10 @@ export async function POST(request: Request) {
         const personalizedRecommendations = personalizeForexRecommendations(
             forexRecommendations,
             {
-                riskTolerance: userProfile.riskTolerance || 'medium',
-                investmentHorizon: userProfile.investmentHorizon || 'medium',
-                investmentAmount: userProfile.investmentAmount || 10000,
-                preferredAssets: userProfile.preferredAssets || 'both',
+                riskTolerance: userProfile.risk_tolerance || 'medium',
+                investmentHorizon: userProfile.investment_horizon || 'medium',
+                investmentAmount: userProfile.investment_amount || 10000,
+                preferredAssets: userProfile.preferred_assets || ['forex'],
             }
         );
 

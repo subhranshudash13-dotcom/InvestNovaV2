@@ -9,10 +9,11 @@ import { toast } from 'sonner';
 
 interface AuthModalProps {
     onClose: () => void;
+    initialMode?: 'signin' | 'signup' | 'reset';
 }
 
-export default function AuthModal({ onClose }: AuthModalProps) {
-    const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
+export default function AuthModal({ onClose, initialMode }: AuthModalProps) {
+    const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>(initialMode ?? 'signin');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);

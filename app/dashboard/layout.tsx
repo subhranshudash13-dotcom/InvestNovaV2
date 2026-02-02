@@ -15,7 +15,7 @@ export default async function DashboardLayout({
     } = await supabase.auth.getUser();
 
     if (!user) {
-        redirect('/');
+        redirect('/login');
     }
 
     // Check for profile
@@ -26,7 +26,7 @@ export default async function DashboardLayout({
         .single();
 
     // If no profile or essential onboarding data missing, redirect
-    if (!profile || !profile.riskTolerance) {
+    if (!profile || !profile.risk_tolerance || profile.onboarding_completed !== true) {
         redirect('/onboarding');
     }
 

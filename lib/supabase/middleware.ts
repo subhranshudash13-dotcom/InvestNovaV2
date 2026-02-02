@@ -2,13 +2,22 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+        // If envs are missing, do not block the request; just skip auth
+        // This allows the app to run locally without crashing
+        return NextResponse.next({ request });
+    }
+
     let supabaseResponse = NextResponse.next({
         request,
     })
 
     const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        supabaseUrl,
+        supabaseAnonKey,
         {
             cookies: {
                 getAll() {
@@ -40,10 +49,11 @@ export async function updateSession(request: NextRequest) {
         !user &&
         (request.nextUrl.pathname.startsWith('/dashboard') ||
             request.nextUrl.pathname.startsWith('/api/recommendations') ||
-            request.nextUrl.pathname.startsWith('/api/forex'))
+            request.nextUrl.pathname.startsWith('/api/forex') ||
+            request.nextUrl.pathname.startsWith('/api/profile'))
     ) {
         const url = request.nextUrl.clone()
-        url.pathname = '/'
+        url.pathname = '/login'
         return NextResponse.redirect(url)
     }
 

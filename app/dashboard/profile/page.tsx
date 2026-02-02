@@ -11,7 +11,19 @@ export default function ProfilePage() {
     const [riskTolerance, setRiskTolerance] = useState(profile?.riskTolerance || 'medium');
     const [investmentHorizon, setInvestmentHorizon] = useState(profile?.investmentHorizon || 'medium');
     const [investmentAmount, setInvestmentAmount] = useState(profile?.investmentAmount || 10000);
-    const [preferredAssets, setPreferredAssets] = useState(profile?.preferredAssets || 'both');
+    const [preferredAssets, setPreferredAssets] = useState<Array<'stocks' | 'forex' | 'crypto'>>(
+        profile?.preferredAssets?.length ? profile.preferredAssets : ['stocks']
+    );
+
+    const togglePreferredAsset = (asset: 'stocks' | 'forex' | 'crypto') => {
+        setPreferredAssets((prev) => {
+            if (prev.includes(asset)) {
+                const next = prev.filter((a) => a !== asset);
+                return next.length ? next : prev;
+            }
+            return [...prev, asset];
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -103,12 +115,12 @@ export default function ProfilePage() {
                     <div>
                         <label className="block text-sm font-medium mb-3">Preferred Assets</label>
                         <div className="grid grid-cols-3 gap-3">
-                            {(['stocks', 'forex', 'both'] as const).map((asset) => (
+                            {(['stocks', 'forex', 'crypto'] as const).map((asset) => (
                                 <button
                                     key={asset}
                                     type="button"
-                                    onClick={() => setPreferredAssets(asset)}
-                                    className={`p-4 rounded-lg border-2 transition ${preferredAssets === asset
+                                    onClick={() => togglePreferredAsset(asset)}
+                                    className={`p-4 rounded-lg border-2 transition ${preferredAssets.includes(asset)
                                             ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                                             : 'border-gray-200 dark:border-gray-700 hover:border-primary-300'
                                         }`}

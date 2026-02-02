@@ -4,6 +4,8 @@
  * Documentation: https://finnhub.io/docs/api
  */
 
+import { AlphaVantageClient } from '@/lib/alpha-vantage/client';
+
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || '';
 const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
 
@@ -11,26 +13,50 @@ if (!FINNHUB_API_KEY && typeof window === 'undefined') {
     console.warn('Warning: FINNHUB_API_KEY is missing. API calls will fail.');
 }
 
+function shouldFallbackToAlphaVantage(error: unknown): boolean {
+    if (!(error instanceof Error)) return false;
+    const msg = error.message.toLowerCase();
+    return (
+        msg.includes('rate limit') ||
+        msg.includes('429') ||
+        msg.includes('finnhub api error') ||
+        msg.includes('network')
+    );
+}
+
 // Rate limiter: Track API calls to stay within 60/min limit
 let apiCallTimestamps: number[] = [];
 
-function checkRateLimit(): void {
-    const now = Date.now();
-    const oneMinuteAgo = now - 60000;
+let finnhubRateLimitPromise: Promise<void> = Promise.resolve();
 
-    // Remove timestamps older than 1 minute
-    apiCallTimestamps = apiCallTimestamps.filter(timestamp => timestamp > oneMinuteAgo);
+async function throttleFinnhub(): Promise<void> {
+    finnhubRateLimitPromise = finnhubRateLimitPromise.then(async () => {
+        const now = Date.now();
+        const oneMinuteAgo = now - 60000;
 
-    if (apiCallTimestamps.length >= 60) {
-        throw new Error('Finnhub API rate limit reached (60 calls/minute). Please try again in a moment.');
-    }
+        // Remove timestamps older than 1 minute
+        apiCallTimestamps = apiCallTimestamps.filter((timestamp) => timestamp > oneMinuteAgo);
 
-    apiCallTimestamps.push(now);
+        // If we already hit the 60/min window, wait until the oldest call drops out.
+        if (apiCallTimestamps.length >= 60) {
+            const oldest = apiCallTimestamps[0];
+            const waitMs = Math.max(oldest + 60000 - now, 0);
+            await new Promise((resolve) => setTimeout(resolve, waitMs));
+
+            const now2 = Date.now();
+            const oneMinuteAgo2 = now2 - 60000;
+            apiCallTimestamps = apiCallTimestamps.filter((timestamp) => timestamp > oneMinuteAgo2);
+        }
+
+        apiCallTimestamps.push(Date.now());
+    });
+
+    return finnhubRateLimitPromise;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchWithRetry(url: string, retries = 3): Promise<any> {
-    checkRateLimit();
+    await throttleFinnhub();
 
     for (let i = 0; i < retries; i++) {
         try {
@@ -64,12 +90,26 @@ async function fetchWithRetry(url: string, retries = 3): Promise<any> {
 
 export async function getQuote(symbol: string) {
     const url = `${FINNHUB_BASE_URL}/quote?symbol=${symbol}`;
-    return fetchWithRetry(url);
+    try {
+        return await fetchWithRetry(url);
+    } catch (error) {
+        if (!shouldFallbackToAlphaVantage(error)) throw error;
+        const fallback = await AlphaVantageClient.getQuote(symbol);
+        if (!fallback) throw error;
+        return fallback;
+    }
 }
 
 export async function getStockProfile(symbol: string) {
     const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${symbol}`;
-    return fetchWithRetry(url);
+    try {
+        return await fetchWithRetry(url);
+    } catch (error) {
+        if (!shouldFallbackToAlphaVantage(error)) throw error;
+        const fallback = await AlphaVantageClient.getStockProfile(symbol);
+        if (!fallback) throw error;
+        return fallback;
+    }
 }
 
 export async function getMarketNews(category = 'general', limit = 10) {
@@ -105,7 +145,14 @@ export async function getStockCandles(symbol: string, resolution: string = 'D', 
     const to = Math.floor(Date.now() / 1000);
     const from = to - (daysBack * 24 * 60 * 60);
     const url = `${FINNHUB_BASE_URL}/stock/candle?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${to}`;
-    return fetchWithRetry(url);
+    try {
+        return await fetchWithRetry(url);
+    } catch (error) {
+        if (!shouldFallbackToAlphaVantage(error)) throw error;
+        const fallback = await AlphaVantageClient.getStockCandles(symbol, resolution, daysBack);
+        if (!fallback) throw error;
+        return fallback;
+    }
 }
 
 // Calculate technical indicators

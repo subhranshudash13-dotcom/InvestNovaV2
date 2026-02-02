@@ -10,7 +10,20 @@ export interface UserProfileData {
     riskTolerance?: 'low' | 'medium' | 'high';
     investmentHorizon?: 'short' | 'medium' | 'long';
     investmentAmount?: number;
-    preferredAssets?: 'stocks' | 'forex' | 'both';
+    preferredAssets?: Array<'stocks' | 'forex' | 'crypto'>;
+    onboardingCompleted?: boolean;
+}
+
+function mapProfileFromDb(row: any): UserProfileData {
+    return {
+        id: row.id,
+        email: row.email,
+        riskTolerance: row.risk_tolerance ?? undefined,
+        investmentHorizon: row.investment_horizon ?? undefined,
+        investmentAmount: row.investment_amount ?? undefined,
+        preferredAssets: row.preferred_assets ?? undefined,
+        onboardingCompleted: row.onboarding_completed ?? undefined,
+    };
 }
 
 export function useUser() {
@@ -33,7 +46,7 @@ export function useUser() {
                     .eq('id', currentUser.id)
                     .single();
 
-                setProfile(data);
+                setProfile(data ? mapProfileFromDb(data) : null);
             }
 
             setLoading(false);
@@ -53,7 +66,7 @@ export function useUser() {
                         .eq('id', session.user.id)
                         .single();
 
-                    setProfile(data);
+                    setProfile(data ? mapProfileFromDb(data) : null);
                 } else {
                     setProfile(null);
                 }
@@ -68,9 +81,20 @@ export function useUser() {
     const updateProfile = async (updates: Partial<UserProfileData>) => {
         if (!user) return { error: { message: 'User not logged in', name: 'AuthError', status: 401 } };
 
+        const updateRow: Record<string, unknown> = {
+            id: user.id,
+        };
+
+        if (updates.email !== undefined) updateRow.email = updates.email;
+        if (updates.riskTolerance !== undefined) updateRow.risk_tolerance = updates.riskTolerance;
+        if (updates.investmentHorizon !== undefined) updateRow.investment_horizon = updates.investmentHorizon;
+        if (updates.investmentAmount !== undefined) updateRow.investment_amount = updates.investmentAmount;
+        if (updates.preferredAssets !== undefined) updateRow.preferred_assets = updates.preferredAssets;
+        if (updates.onboardingCompleted !== undefined) updateRow.onboarding_completed = updates.onboardingCompleted;
+
         const { error } = await supabase
             .from('profiles')
-            .upsert({ id: user.id, ...updates });
+            .upsert(updateRow);
 
         if (!error && profile) {
             setProfile({ ...profile, ...updates });
