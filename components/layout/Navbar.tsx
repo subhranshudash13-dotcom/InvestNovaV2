@@ -6,17 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X, TrendingUp, LayoutDashboard, User } from "lucide-react";
+import { Menu, X, TrendingUp, LayoutDashboard } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useUser } from "@/hooks/useUser";
-import AuthModal from "@/components/auth/AuthModal";
 
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showAuthModal, setShowAuthModal] = useState(false);
     const pathname = usePathname();
-    const { user, loading } = useUser();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -29,7 +25,7 @@ export function Navbar() {
     const navItems = [
         { name: "Home", href: "/" },
         { name: "Features", href: "#features" },
-        ...(user ? [{ name: "Dashboard", href: "/dashboard", icon: LayoutDashboard }] : []),
+        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     ];
 
     return (
@@ -39,13 +35,14 @@ export function Navbar() {
                 animate={{ y: 0 }}
                 transition={{ duration: 0.5 }}
                 className={cn(
-                    "fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-[95%] max-w-7xl rounded-full border border-transparent",
+                    "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
                     isScrolled
-                        ? "bg-background/60 backdrop-blur-xl border-border shadow-lg py-1 px-2"
-                        : "bg-transparent py-4 px-4"
+                        ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-lg"
+                        : "bg-transparent"
                 )}
             >
-                <div className="flex items-center justify-between h-14 px-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 group">
                         <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
@@ -77,23 +74,12 @@ export function Navbar() {
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-3">
                         <ThemeToggle />
-                        {loading ? (
-                            <div className="w-24 h-9 bg-muted animate-pulse rounded-full" />
-                        ) : user ? (
-                            <Link href="/dashboard">
-                                <Button variant="outline" className="rounded-full gap-2 border-primary/20 hover:bg-primary/5">
-                                    <User className="w-4 h-4" />
-                                    Account
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Button
-                                onClick={() => setShowAuthModal(true)}
-                                className="button-primary px-6 h-10 text-xs"
-                            >
-                                Get Started
+                        <Link href="/dashboard">
+                            <Button variant="outline" className="rounded-full gap-2 border-primary/20 hover:bg-primary/5">
+                                <LayoutDashboard className="w-4 h-4" />
+                                Dashboard
                             </Button>
-                        )}
+                        </Link>
                     </div>
 
                     {/* Mobile Menu Toggle */}
@@ -107,15 +93,16 @@ export function Navbar() {
                         </button>
                     </div>
                 </div>
+                </div>
 
                 {/* Mobile Menu */}
                 <AnimatePresence>
                     {mobileMenuOpen && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                            animate={{ opacity: 1, scale: 1, y: 10 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                            className="absolute top-full left-0 right-0 mt-4 mx-2 glass-card p-4 flex flex-col gap-2"
+                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                            className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border shadow-lg p-4"
                         >
                             {navItems.map((item) => (
                                 <Link
@@ -127,28 +114,14 @@ export function Navbar() {
                                     {item.name}
                                 </Link>
                             ))}
-                            {!user && (
-                                <Button
-                                    onClick={() => {
-                                        setMobileMenuOpen(false);
-                                        setShowAuthModal(true);
-                                    }}
-                                    className="w-full mt-2 h-12 text-base"
-                                >
-                                    Start Trading Now
-                                </Button>
-                            )}
-                            {user && (
-                                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                                    <Button className="w-full mt-2 h-12 text-base">Go to Dashboard</Button>
-                                </Link>
-                            )}
+                            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                                <Button className="w-full mt-2 h-12 text-base">Go to Dashboard</Button>
+                            </Link>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </motion.nav>
 
-            {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-        </>
+            </>
     );
 }

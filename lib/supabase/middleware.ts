@@ -47,8 +47,7 @@ export async function updateSession(request: NextRequest) {
     // Protected routes - redirect to home if not authenticated
     if (
         !user &&
-        (request.nextUrl.pathname.startsWith('/dashboard') ||
-            request.nextUrl.pathname.startsWith('/api/recommendations') ||
+        (request.nextUrl.pathname.startsWith('/api/recommendations') ||
             request.nextUrl.pathname.startsWith('/api/forex') ||
             request.nextUrl.pathname.startsWith('/api/profile'))
     ) {

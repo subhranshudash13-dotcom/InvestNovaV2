@@ -1,9 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import Link from 'next/link';
 import { TrendingUp, BarChart3, Shield } from 'lucide-react';
-import AuthModal from '@/components/auth/AuthModal';
 import dynamic from 'next/dynamic';
 
 const Globe = dynamic(() => import('@/components/landing/Globe').then(mod => mod.Globe), {
@@ -12,8 +11,6 @@ const Globe = dynamic(() => import('@/components/landing/Globe').then(mod => mod
 });
 
 export default function Hero() {
-    const [showAuthModal, setShowAuthModal] = useState(false);
-
     return (
         <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
             {/* 3D Globe Background */}
@@ -32,11 +29,14 @@ export default function Hero() {
                     <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-semibold tracking-wide uppercase">
                         Institutional Grade Social Signals
                     </div>
+                    <div className="inline-block px-4 py-1.5 mb-6 ml-2 rounded-full border border-green-500/20 bg-green-500/5 text-green-600 dark:text-green-400 text-sm font-semibold tracking-wide uppercase">
+                        AI Predictions Available
+                    </div>
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 tracking-tight">
-                        <span className="text-gradient">Community Driven</span> Intelligence
+                        <span className="text-gradient">UPDATED: AI Predictions Live</span>
                     </h1>
                     <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-6 max-w-4xl mx-auto leading-tight">
-                        Track Whale Movements & Market Sentiment in Real-Time
+                        Your dashboard now shows LSTM, XGBoost, and Transformer predictions.
                     </p>
                     <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto px-4">
                         Join thousands of traders using AI and Social Signals to beat the market.
@@ -50,12 +50,11 @@ export default function Hero() {
                     transition={{ delay: 0.6, duration: 0.4 }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4"
                 >
-                    <button
-                        onClick={() => setShowAuthModal(true)}
-                        className="button-primary text-lg px-12 py-5 w-full sm:w-auto"
-                    >
-                        Join the Community
-                    </button>
+                    <Link href="/dashboard">
+                        <button className="button-primary text-lg px-12 py-5 w-full sm:w-auto">
+                            View Dashboard
+                        </button>
+                    </Link>
                     <button
                         onClick={() => {
                             const featuresSection = document.getElementById('features');
@@ -68,6 +67,15 @@ export default function Hero() {
                         Explore Features
                     </button>
                 </motion.div>
+
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1, duration: 0.6 }}
+                    className="text-sm text-muted-foreground mt-6"
+                >
+                    No sign‑in required — AI recommendations are available instantly.
+                </motion.p>
 
                 {/* Feature Pills */}
                 <motion.div
@@ -91,8 +99,6 @@ export default function Hero() {
                 </motion.div>
             </div>
 
-            {/* Auth Modal */}
-            {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-        </div>
+            </div>
     );
 }
